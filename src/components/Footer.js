@@ -39,9 +39,9 @@ const Footer = () => {
 
   const socialLinks = [
     { icon: FiLinkedin, href: '#', label: 'LinkedIn' },
-    { icon: FiTwitter, href: '#', label: 'Twitter' },
-    { icon: FiGithub, href: '#', label: 'GitHub' },
-    { icon: FiMail, href: 'mailto:hello@ofameh.com', label: 'Email' },
+    { icon: FiTwitter, href: 'https://x.com/osowoofameh', label: 'X (Twitter)' },
+    { icon: FiGithub, href: 'https://github.com/ofameh', label: 'GitHub' },
+    { icon: FiMail, href: 'mailto:osowoofameh@gmail.com', label: 'Email' },
   ];
 
   return (

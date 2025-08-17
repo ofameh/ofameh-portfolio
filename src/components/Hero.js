@@ -2,6 +2,86 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowDown, FiPlay } from 'react-icons/fi';
 
+// Polar Bear Mascot Component
+const PolarBearMascot = () => {
+  return (
+    <motion.div
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ 
+        x: [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000],
+        opacity: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+      }}
+      transition={{
+        duration: 12,
+        repeat: Infinity,
+        repeatDelay: 8,
+        ease: "linear"
+      }}
+      className="absolute top-20 left-0 pointer-events-none z-10"
+    >
+      {/* Polar Bear Body */}
+      <motion.div
+        animate={{ y: [0, -3, 0] }}
+        transition={{ duration: 0.8, repeat: Infinity }}
+        className="relative"
+      >
+        {/* Bear Body - Standing Position */}
+        <div className="w-14 h-16 bg-white rounded-full shadow-lg relative">
+          {/* Bear Head */}
+          <div className="w-12 h-12 bg-white rounded-full absolute -top-3 left-1/2 transform -translate-x-1/2 shadow-lg">
+            {/* Ears */}
+            <div className="w-4 h-4 bg-white rounded-full absolute -top-1 -left-1 shadow-sm"></div>
+            <div className="w-4 h-4 bg-white rounded-full absolute -top-1 -right-1 shadow-sm"></div>
+            
+            {/* Eyes */}
+            <div className="w-2.5 h-2.5 bg-slate-800 rounded-full absolute top-3 left-2.5"></div>
+            <div className="w-2.5 h-2.5 bg-slate-800 rounded-full absolute top-3 right-2.5"></div>
+            
+            {/* Nose */}
+            <div className="w-1.5 h-1.5 bg-slate-800 rounded-full absolute top-5 left-1/2 transform -translate-x-1/2"></div>
+            
+            {/* Mouth */}
+            <div className="w-3 h-1 bg-slate-800 rounded-full absolute top-6 left-1/2 transform -translate-x-1/2"></div>
+          </div>
+          
+          {/* Arms - Standing Position */}
+          <motion.div
+            animate={{ rotate: [0, 10, 0, -10, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity }}
+            className="w-4 h-8 bg-white rounded-full absolute top-2 -left-1 shadow-sm"
+          ></motion.div>
+          <motion.div
+            animate={{ rotate: [0, -10, 0, 10, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
+            className="w-4 h-8 bg-white rounded-full absolute top-2 -right-1 shadow-sm"
+          ></motion.div>
+          
+          {/* Legs - Standing Position */}
+          <motion.div
+            animate={{ rotate: [0, 5, 0, -5, 0] }}
+            transition={{ duration: 0.5, repeat: Infinity }}
+            className="w-4 h-10 bg-white rounded-full absolute bottom-0 left-2 shadow-sm"
+          ></motion.div>
+          <motion.div
+            animate={{ rotate: [0, -5, 0, 5, 0] }}
+            transition={{ duration: 0.5, repeat: Infinity, delay: 0.25 }}
+            className="w-4 h-10 bg-white rounded-full absolute bottom-0 right-2 shadow-sm"
+          ></motion.div>
+        </div>
+        
+        {/* Snow Trail */}
+        <motion.div
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 0.4, repeat: Infinity }}
+          className="absolute -bottom-3 left-1/2 transform -translate-x-1/2"
+        >
+          <div className="w-3 h-3 bg-white/40 rounded-full"></div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const TypewriterText = ({ phrases, className }) => {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
@@ -85,6 +165,9 @@ const Hero = () => {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-subtle">
+      {/* Polar Bear Mascot */}
+      <PolarBearMascot />
+      
       {/* Subtle animated background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-radial from-accent-blue/5 via-transparent to-transparent"></div>

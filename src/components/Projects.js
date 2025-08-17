@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FiExternalLink, FiGithub, FiEye, FiTrendingUp, FiCode, FiUsers } from 'react-icons/fi';
+import { FiExternalLink, FiGithub, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 
 const Projects = () => {
-  const [ref, inView] = useInView({
-    threshold: 0.3,
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const { ref, inView } = useInView({
+    threshold: 0.1,
     triggerOnce: true,
   });
-
-  const [activeFilter, setActiveFilter] = useState('all');
 
   const projects = [
     {
       id: 1,
       title: 'BetaFix Platform',
       category: 'startup',
-      description: 'Professional artisan marketplace connecting skilled professionals with customers. Features include 15-minute response times, verified artisans, and comprehensive service categories.',
+      description: 'Professional artisan marketplace connecting 500+ verified professionals with customers. Achieved 15-minute response times and 20+ service categories through innovative platform design.',
       image: '/api/placeholder/400/300',
       technologies: ['React', 'Frontend Development', 'UI/UX Design', 'Responsive Design'],
       link: 'https://betafix.vercel.app/',
@@ -25,188 +25,173 @@ const Projects = () => {
     },
     {
       id: 2,
-      title: 'Trading Algorithm Suite',
+      title: 'Trading Dashboard',
       category: 'trading',
-      description: 'Advanced algorithmic trading system with real-time market analysis and automated execution.',
+      description: 'Advanced trading analytics platform with real-time market data visualization. Implemented technical analysis tools and portfolio tracking for optimal trading decisions.',
       image: '/api/placeholder/400/300',
-      technologies: ['Python', 'Pandas', 'NumPy', 'TradingView API'],
+      technologies: ['React', 'Chart.js', 'TradingView API', 'Real-time Data'],
       link: '#',
       github: '#',
-      stats: { roi: '25%', trades: '500+', accuracy: '85%' }
+      stats: { accuracy: '65%', trades: '100+', profit: '25%' }
     },
     {
       id: 3,
-      title: 'E-Commerce Platform',
+      title: 'E-commerce Solution',
       category: 'web',
-      description: 'Modern e-commerce solution with advanced features, payment integration, and analytics.',
+      description: 'Modern e-commerce platform with seamless user experience and integrated payment processing. Built with performance optimization and mobile-first design principles.',
       image: '/api/placeholder/400/300',
-      technologies: ['Next.js', 'Stripe', 'MongoDB', 'Redux'],
+      technologies: ['React', 'Stripe API', 'Responsive Design', 'Performance'],
       link: '#',
       github: '#',
-      stats: { sales: '$500K+', users: '5K+', conversion: '12%' }
+      stats: { users: '1000+', conversion: '3.2%', load: '1.2s' }
     },
     {
       id: 4,
-      title: 'Portfolio Tracker',
-      category: 'trading',
-      description: 'Comprehensive portfolio management tool with real-time tracking and performance analytics.',
+      title: 'Portfolio Website',
+      category: 'web',
+      description: 'Personal portfolio showcasing professional work and achievements. Features smooth animations, responsive design, and modern UI/UX principles.',
       image: '/api/placeholder/400/300',
-      technologies: ['React', 'Chart.js', 'Firebase', 'WebSocket'],
+      technologies: ['React', 'Framer Motion', 'Tailwind CSS', 'Responsive'],
       link: '#',
       github: '#',
-      stats: { portfolios: '1K+', assets: '50+', accuracy: '99.9%' }
+      stats: { sections: '7', animations: '15+', performance: '95%' }
     },
     {
       id: 5,
-      title: 'AI Chat Assistant',
+      title: 'Analytics Dashboard',
       category: 'web',
-      description: 'Intelligent chatbot powered by machine learning for customer support and engagement.',
+      description: 'Comprehensive analytics dashboard for business intelligence and data visualization. Real-time metrics and interactive charts for informed decision-making.',
       image: '/api/placeholder/400/300',
-      technologies: ['Python', 'TensorFlow', 'React', 'FastAPI'],
+      technologies: ['React', 'D3.js', 'Data Visualization', 'Real-time'],
       link: '#',
       github: '#',
-      stats: { conversations: '50K+', accuracy: '92%', satisfaction: '95%' }
+      stats: { metrics: '50+', charts: '12', users: '500+' }
     },
     {
       id: 6,
-      title: 'Business Analytics Dashboard',
-      category: 'startup',
-      description: 'Comprehensive business intelligence platform with real-time data visualization.',
+      title: 'Mobile App Interface',
+      category: 'web',
+      description: 'Cross-platform mobile interface design with native-like performance. Optimized for touch interactions and mobile user experience patterns.',
       image: '/api/placeholder/400/300',
-      technologies: ['React', 'D3.js', 'Node.js', 'PostgreSQL'],
+      technologies: ['React Native', 'Mobile UI', 'Touch Optimization', 'PWA'],
       link: '#',
       github: '#',
-      stats: { insights: '100+', users: '500+', efficiency: '40%' }
+      stats: { platforms: '3', screens: '25+', performance: '98%' }
     }
-  ];
-
-  const filters = [
-    { id: 'all', label: 'All Projects', icon: FiEye },
-    { id: 'startup', label: 'BetaFix', icon: FiUsers },
-    { id: 'trading', label: 'Trading', icon: FiTrendingUp },
-    { id: 'web', label: 'Web Dev', icon: FiCode }
   ];
 
   const filteredProjects = activeFilter === 'all' 
     ? projects 
     : projects.filter(project => project.category === activeFilter);
 
-  return (
-    <section id="projects" className="py-20 bg-gray-900 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-full h-full bg-gradient-radial from-neon-purple/5 via-transparent to-transparent"></div>
-      </div>
+  const nextProject = () => {
+    setCurrentProjectIndex((prev) => 
+      prev === filteredProjects.length - 1 ? 0 : prev + 1
+    );
+  };
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+  const prevProject = () => {
+    setCurrentProjectIndex((prev) => 
+      prev === 0 ? filteredProjects.length - 1 : prev - 1
+    );
+  };
+
+  const currentProject = filteredProjects[currentProjectIndex];
+
+  return (
+    <section id="projects" ref={ref} className="py-16 bg-slate-900">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
         <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-            <span className="gradient-text">Featured Projects</span>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-100 mb-4">
+            Featured Projects
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-            A showcase of my work across business leadership, trading systems, and web development.
+          <p className="text-slate-400 max-w-2xl mx-auto">
+            A showcase of my latest work, from startup platforms to trading tools and web applications.
           </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-neon-purple to-neon-blue mx-auto rounded-full"></div>
         </motion.div>
 
         {/* Filter Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="flex flex-wrap justify-center gap-3 mb-8"
         >
-          {filters.map((filter) => (
-            <motion.button
-              key={filter.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setActiveFilter(filter.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                activeFilter === filter.id
-                  ? 'bg-neon-purple text-white glow-purple'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white'
+          {['all', 'startup', 'trading', 'web'].map((filter) => (
+            <button
+              key={filter}
+              onClick={() => {
+                setActiveFilter(filter);
+                setCurrentProjectIndex(0);
+              }}
+              className={`px-4 py-2 text-sm rounded-lg border transition-all duration-300 ${
+                activeFilter === filter
+                  ? 'bg-accent-blue text-white border-accent-blue'
+                  : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:border-accent-blue hover:text-accent-blue'
               }`}
             >
-              <filter.icon size={18} />
-              {filter.label}
-            </motion.button>
+              {filter.charAt(0).toUpperCase() + filter.slice(1)}
+            </button>
           ))}
         </motion.div>
 
-        {/* Projects Grid */}
-        <motion.div
-          layout
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
+        {/* Projects Grid - Desktop */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project, index) => (
             <motion.div
               key={project.id}
-              layout
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ 
-                scale: 1.02, 
-                y: -5,
-                boxShadow: "0 20px 40px rgba(139, 92, 246, 0.2)"
+                y: -4,
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
               }}
-              className="group bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden hover:border-neon-purple/50 transition-all duration-500"
+              className="group glass rounded-xl overflow-hidden card-hover"
             >
               {/* Project Image */}
-              <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-800 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-neon-purple/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <FiCode className="text-2xl text-neon-purple" />
-                    </div>
-                    <p className="text-gray-400 text-sm">Project Preview</p>
-                  </div>
-                </div>
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
-                  <motion.a
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+              <div className="relative h-40 bg-gradient-to-br from-slate-700 to-slate-800">
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                  <a
                     href={project.link}
-                    className="p-3 bg-neon-purple rounded-full text-white hover:bg-neon-blue transition-colors duration-200"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-12 h-12 bg-accent-blue rounded-full flex items-center justify-center text-white hover:bg-accent-cyan transition-colors"
                   >
-                    <FiExternalLink size={20} />
-                  </motion.a>
-                  <motion.a
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    <FiExternalLink size={16} />
+                  </a>
+                  <a
                     href={project.github}
-                    className="p-3 bg-gray-800 rounded-full text-white hover:bg-gray-700 transition-colors duration-200"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-300 hover:text-white transition-colors"
                   >
-                    <FiGithub size={20} />
-                  </motion.a>
+                    <FiGithub size={16} />
+                  </a>
                 </div>
               </div>
 
               {/* Project Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-neon-purple transition-colors duration-300">
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-slate-100 group-hover:text-accent-blue transition-colors mb-2">
                   {project.title}
                 </h3>
-                <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                <p className="text-slate-400 text-sm mb-4 line-clamp-3">
                   {project.description}
                 </p>
 
                 {/* Technologies */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.map((tech) => (
+                  {project.technologies.map((tech, techIndex) => (
                     <span
-                      key={tech}
-                      className="px-2 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs text-neon-purple"
+                      key={techIndex}
+                      className="px-2 py-1 text-xs bg-slate-800/50 text-slate-300 rounded border border-slate-600"
                     >
                       {tech}
                     </span>
@@ -214,37 +199,114 @@ const Projects = () => {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="flex gap-4 text-xs">
                   {Object.entries(project.stats).map(([key, value]) => (
-                    <div
-                      key={key}
-                      className="text-center p-2 bg-gray-700/50 rounded"
-                    >
-                      <div className="text-white font-semibold">{value}</div>
-                      <div className="text-gray-400 capitalize">{key}</div>
+                    <div key={key} className="bg-slate-800/30 px-2 py-1 rounded border border-slate-700">
+                      <span className="text-slate-100 font-medium">{value}</span>
+                      <span className="text-slate-400 ml-1">{key}</span>
                     </div>
                   ))}
                 </div>
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        {/* View More Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-center mt-16"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(139, 92, 246, 0.5)" }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 bg-gradient-to-r from-neon-purple to-neon-blue text-white font-semibold rounded-lg hover:from-neon-blue hover:to-neon-cyan transition-all duration-300 glow-purple"
+        {/* Mobile Carousel */}
+        <div className="md:hidden">
+          <motion.div
+            key={currentProject?.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+            className="glass rounded-xl overflow-hidden card-hover"
           >
-            View All Projects
-          </motion.button>
-        </motion.div>
+            {/* Project Image */}
+            <div className="relative h-40 bg-gradient-to-br from-slate-700 to-slate-800">
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                <a
+                  href={currentProject?.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 bg-accent-blue rounded-full flex items-center justify-center text-white hover:bg-accent-cyan transition-colors"
+                >
+                  <FiExternalLink size={16} />
+                </a>
+                <a
+                  href={currentProject?.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-300 hover:text-white transition-colors"
+                >
+                  <FiGithub size={16} />
+                </a>
+              </div>
+            </div>
+
+            {/* Project Content */}
+            <div className="p-5">
+              <h3 className="text-lg font-semibold text-slate-100 group-hover:text-accent-blue transition-colors mb-2">
+                {currentProject?.title}
+              </h3>
+              <p className="text-slate-400 text-sm mb-4">
+                {currentProject?.description}
+              </p>
+
+              {/* Technologies */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {currentProject?.technologies.map((tech, techIndex) => (
+                  <span
+                    key={techIndex}
+                    className="px-2 py-1 text-xs bg-slate-800/50 text-slate-300 rounded border border-slate-600"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              {/* Stats */}
+              <div className="flex gap-4 text-xs">
+                {currentProject && Object.entries(currentProject.stats).map(([key, value]) => (
+                  <div key={key} className="bg-slate-800/30 px-2 py-1 rounded border border-slate-700">
+                    <span className="text-slate-100 font-medium">{value}</span>
+                    <span className="text-slate-400 ml-1">{key}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Mobile Navigation */}
+          <div className="flex justify-between items-center mt-6">
+            <button
+              onClick={prevProject}
+              className="w-12 h-12 bg-slate-800/50 rounded-full flex items-center justify-center text-slate-300 hover:text-accent-blue transition-colors border border-slate-700"
+            >
+              <FiArrowLeft size={20} />
+            </button>
+            
+            <div className="flex gap-2">
+              {filteredProjects.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentProjectIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentProjectIndex 
+                      ? 'bg-accent-blue' 
+                      : 'bg-slate-600'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={nextProject}
+              className="w-12 h-12 bg-slate-800/50 rounded-full flex items-center justify-center text-slate-300 hover:text-accent-blue transition-colors border border-slate-700"
+            >
+              <FiArrowRight size={20} />
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   );

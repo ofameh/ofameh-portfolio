@@ -58,8 +58,6 @@ src/
 │   ├── About.js        # About me section
 │   ├── Expertise.js    # Skills and expertise
 │   ├── Projects.js     # Portfolio projects
-│   ├── Testimonials.js # Client testimonials
-│   ├── Skills.js       # Technical skills
 │   ├── Blog.js         # Blog posts section
 │   ├── Contact.js      # Contact form
 │   ├── Footer.js       # Footer component
@@ -90,11 +88,9 @@ Custom animations are defined in the Tailwind config:
 2. **About** - Bio and animated statistics
 3. **Expertise** - Three main roles (CEO, Trader, Developer)
 4. **Projects** - Portfolio showcase with filtering
-5. **Testimonials** - Client feedback and recognition
-6. **Skills** - Technical skills and tools
-7. **Blog** - Latest insights and articles
-8. **Contact** - Contact form and information
-9. **Footer** - Social links and navigation
+5. **Blog** - Latest insights and articles
+6. **Contact** - Contact form and information
+7. **Footer** - Social links and navigation
 
 ## 🌐 Deployment
 

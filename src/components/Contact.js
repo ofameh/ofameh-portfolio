@@ -66,8 +66,8 @@ const Contact = () => {
 
   const socialLinks = [
     { icon: FiLinkedin, label: 'LinkedIn', href: '#', color: 'accent-blue' },
-    { icon: FiTwitter, label: 'Twitter', href: '#', color: 'accent-cyan' },
-    { icon: FiGithub, label: 'GitHub', href: '#', color: 'accent-emerald' },
+    { icon: FiTwitter, label: 'X (Twitter)', href: 'https://x.com/osowoofameh', color: 'accent-cyan' },
+    { icon: FiGithub, label: 'GitHub', href: 'https://github.com/ofameh', color: 'accent-emerald' },
   ];
 
   const containerVariants = {
