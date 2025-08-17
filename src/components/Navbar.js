@@ -25,7 +25,7 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { name: 'Home', href: '#home' },
+    { name: 'Home', href: '#hero' },
     { name: 'About', href: '#about' },
     { name: 'Expertise', href: '#expertise' },
     { name: 'Projects', href: '#projects' },
@@ -47,7 +47,7 @@ const Navbar = () => {
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="text-xl font-semibold text-slate-100 cursor-pointer"
-            onClick={() => scrollToSection('#home')}
+            onClick={() => scrollToSection('#hero')}
           >
             Ofameh
           </motion.div>

@@ -25,58 +25,25 @@ const Projects = () => {
     },
     {
       id: 2,
-      title: 'Trading Dashboard',
+      title: 'Trading Journal',
       category: 'trading',
-      description: 'Advanced trading analytics platform with real-time market data visualization. Implemented technical analysis tools and portfolio tracking for optimal trading decisions.',
+      description: 'Comprehensive trading journal platform for tracking trades, analyzing performance, and improving trading strategies. Features detailed analytics and performance metrics.',
       image: '/api/placeholder/400/300',
-      technologies: ['React', 'Chart.js', 'TradingView API', 'Real-time Data'],
+      technologies: ['React', 'Chart.js', 'Data Analytics', 'Performance Tracking'],
       link: '#',
       github: '#',
-      stats: { accuracy: '65%', trades: '100+', profit: '25%' }
+      stats: { trades: '100+', accuracy: '65%', analysis: 'Real-time' }
     },
     {
       id: 3,
-      title: 'E-commerce Solution',
+      title: 'Sharon Portfolio',
       category: 'web',
-      description: 'Modern e-commerce platform with seamless user experience and integrated payment processing. Built with performance optimization and mobile-first design principles.',
+      description: 'Modern portfolio website for Sharon showcasing professional work and achievements. Features smooth animations, responsive design, and elegant user experience.',
       image: '/api/placeholder/400/300',
-      technologies: ['React', 'Stripe API', 'Responsive Design', 'Performance'],
+      technologies: ['React', 'Framer Motion', 'Tailwind CSS', 'Responsive Design'],
       link: '#',
       github: '#',
-      stats: { users: '1000+', conversion: '3.2%', load: '1.2s' }
-    },
-    {
-      id: 4,
-      title: 'Portfolio Website',
-      category: 'web',
-      description: 'Personal portfolio showcasing professional work and achievements. Features smooth animations, responsive design, and modern UI/UX principles.',
-      image: '/api/placeholder/400/300',
-      technologies: ['React', 'Framer Motion', 'Tailwind CSS', 'Responsive'],
-      link: '#',
-      github: '#',
-      stats: { sections: '7', animations: '15+', performance: '95%' }
-    },
-    {
-      id: 5,
-      title: 'Analytics Dashboard',
-      category: 'web',
-      description: 'Comprehensive analytics dashboard for business intelligence and data visualization. Real-time metrics and interactive charts for informed decision-making.',
-      image: '/api/placeholder/400/300',
-      technologies: ['React', 'D3.js', 'Data Visualization', 'Real-time'],
-      link: '#',
-      github: '#',
-      stats: { metrics: '50+', charts: '12', users: '500+' }
-    },
-    {
-      id: 6,
-      title: 'Mobile App Interface',
-      category: 'web',
-      description: 'Cross-platform mobile interface design with native-like performance. Optimized for touch interactions and mobile user experience patterns.',
-      image: '/api/placeholder/400/300',
-      technologies: ['React Native', 'Mobile UI', 'Touch Optimization', 'PWA'],
-      link: '#',
-      github: '#',
-      stats: { platforms: '3', screens: '25+', performance: '98%' }
+      stats: { sections: '6', animations: '12+', performance: '95%' }
     }
   ];
 
@@ -162,6 +129,7 @@ const Projects = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`Visit ${project.title} live site`}
                     className="w-12 h-12 bg-accent-blue rounded-full flex items-center justify-center text-white hover:bg-accent-cyan transition-colors"
                   >
                     <FiExternalLink size={16} />
@@ -170,6 +138,7 @@ const Projects = () => {
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`View ${project.title} source code on GitHub`}
                     className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-300 hover:text-white transition-colors"
                   >
                     <FiGithub size={16} />
@@ -228,6 +197,7 @@ const Projects = () => {
                   href={currentProject?.link}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Visit ${currentProject?.title} live site`}
                   className="w-12 h-12 bg-accent-blue rounded-full flex items-center justify-center text-white hover:bg-accent-cyan transition-colors"
                 >
                   <FiExternalLink size={16} />
@@ -236,6 +206,7 @@ const Projects = () => {
                   href={currentProject?.github}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`View ${currentProject?.title} source code on GitHub`}
                   className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-300 hover:text-white transition-colors"
                 >
                   <FiGithub size={16} />
@@ -280,6 +251,7 @@ const Projects = () => {
           <div className="flex justify-between items-center mt-6">
             <button
               onClick={prevProject}
+              aria-label="Previous project"
               className="w-12 h-12 bg-slate-800/50 rounded-full flex items-center justify-center text-slate-300 hover:text-accent-blue transition-colors border border-slate-700"
             >
               <FiArrowLeft size={20} />
@@ -290,6 +262,7 @@ const Projects = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentProjectIndex(index)}
+                  aria-label={`Go to project ${index + 1}`}
                   className={`w-2 h-2 rounded-full transition-colors ${
                     index === currentProjectIndex 
                       ? 'bg-accent-blue' 
@@ -301,6 +274,7 @@ const Projects = () => {
 
             <button
               onClick={nextProject}
+              aria-label="Next project"
               className="w-12 h-12 bg-slate-800/50 rounded-full flex items-center justify-center text-slate-300 hover:text-accent-blue transition-colors border border-slate-700"
             >
               <FiArrowRight size={20} />

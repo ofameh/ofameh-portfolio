@@ -1,99 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { FiArrowDown, FiPlay } from 'react-icons/fi';
+import { useInView } from 'react-intersection-observer';
 
-// Polar Bear Mascot Component
-const PolarBearMascot = () => {
-  return (
-    <motion.div
-      initial={{ x: -100, opacity: 0 }}
-      animate={{ 
-        x: [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000],
-        opacity: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
-      }}
-      transition={{
-        duration: 12,
-        repeat: Infinity,
-        repeatDelay: 8,
-        ease: "linear"
-      }}
-      className="absolute top-20 left-0 pointer-events-none z-10"
-    >
-      {/* Polar Bear Body */}
-      <motion.div
-        animate={{ y: [0, -3, 0] }}
-        transition={{ duration: 0.8, repeat: Infinity }}
-        className="relative"
-      >
-        {/* Bear Body - Standing Position */}
-        <div className="w-14 h-16 bg-white rounded-full shadow-lg relative">
-          {/* Bear Head */}
-          <div className="w-12 h-12 bg-white rounded-full absolute -top-3 left-1/2 transform -translate-x-1/2 shadow-lg">
-            {/* Ears */}
-            <div className="w-4 h-4 bg-white rounded-full absolute -top-1 -left-1 shadow-sm"></div>
-            <div className="w-4 h-4 bg-white rounded-full absolute -top-1 -right-1 shadow-sm"></div>
-            
-            {/* Eyes */}
-            <div className="w-2.5 h-2.5 bg-slate-800 rounded-full absolute top-3 left-2.5"></div>
-            <div className="w-2.5 h-2.5 bg-slate-800 rounded-full absolute top-3 right-2.5"></div>
-            
-            {/* Nose */}
-            <div className="w-1.5 h-1.5 bg-slate-800 rounded-full absolute top-5 left-1/2 transform -translate-x-1/2"></div>
-            
-            {/* Mouth */}
-            <div className="w-3 h-1 bg-slate-800 rounded-full absolute top-6 left-1/2 transform -translate-x-1/2"></div>
-          </div>
-          
-          {/* Arms - Standing Position */}
-          <motion.div
-            animate={{ rotate: [0, 10, 0, -10, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity }}
-            className="w-4 h-8 bg-white rounded-full absolute top-2 -left-1 shadow-sm"
-          ></motion.div>
-          <motion.div
-            animate={{ rotate: [0, -10, 0, 10, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
-            className="w-4 h-8 bg-white rounded-full absolute top-2 -right-1 shadow-sm"
-          ></motion.div>
-          
-          {/* Legs - Standing Position */}
-          <motion.div
-            animate={{ rotate: [0, 5, 0, -5, 0] }}
-            transition={{ duration: 0.5, repeat: Infinity }}
-            className="w-4 h-10 bg-white rounded-full absolute bottom-0 left-2 shadow-sm"
-          ></motion.div>
-          <motion.div
-            animate={{ rotate: [0, -5, 0, 5, 0] }}
-            transition={{ duration: 0.5, repeat: Infinity, delay: 0.25 }}
-            className="w-4 h-10 bg-white rounded-full absolute bottom-0 right-2 shadow-sm"
-          ></motion.div>
-        </div>
-        
-        {/* Snow Trail */}
-        <motion.div
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 0.4, repeat: Infinity }}
-          className="absolute -bottom-3 left-1/2 transform -translate-x-1/2"
-        >
-          <div className="w-3 h-3 bg-white/40 rounded-full"></div>
-        </motion.div>
-      </motion.div>
-    </motion.div>
-  );
-};
+const TypewriterText = ({ phrases }) => {
+  const [currentPhraseIndex, setCurrentPhraseIndex] = React.useState(0);
+  const [currentCharIndex, setCurrentCharIndex] = React.useState(0);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
-const TypewriterText = ({ phrases, className }) => {
-  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
-  const [currentCharIndex, setCurrentCharIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [displayText, setDisplayText] = useState('');
-
-  useEffect(() => {
+  React.useEffect(() => {
     const currentPhrase = phrases[currentPhraseIndex];
     
     if (!isDeleting && currentCharIndex < currentPhrase.length) {
       const timeout = setTimeout(() => {
-        setDisplayText(currentPhrase.slice(0, currentCharIndex + 1));
         setCurrentCharIndex(currentCharIndex + 1);
       }, 80);
       return () => clearTimeout(timeout);
@@ -104,7 +22,6 @@ const TypewriterText = ({ phrases, className }) => {
       return () => clearTimeout(timeout);
     } else if (isDeleting && currentCharIndex > 0) {
       const timeout = setTimeout(() => {
-        setDisplayText(currentPhrase.slice(0, currentCharIndex - 1));
         setCurrentCharIndex(currentCharIndex - 1);
       }, 40);
       return () => clearTimeout(timeout);
@@ -115,186 +32,201 @@ const TypewriterText = ({ phrases, className }) => {
   }, [currentPhraseIndex, currentCharIndex, isDeleting, phrases]);
 
   return (
-    <div className={className}>
-      <span className="text-slate-100">{displayText}</span>
+    <span className="text-slate-100">
+      {phrases[currentPhraseIndex].substring(0, currentCharIndex)}
       <motion.span
         animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.6, repeat: Infinity }}
-        className="text-accent-blue ml-1"
+        transition={{ duration: 0.5, repeat: Infinity }}
+        className="text-accent-blue"
       >
         |
       </motion.span>
-    </div>
+    </span>
   );
 };
 
 const Hero = () => {
-  const [particles, setParticles] = useState([]);
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
 
-  useEffect(() => {
-    const generateParticles = () => {
-      const newParticles = [];
-      for (let i = 0; i < 30; i++) {
-        newParticles.push({
-          id: i,
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          size: Math.random() * 2 + 1,
-          duration: Math.random() * 15 + 10,
-          delay: Math.random() * 15,
-        });
-      }
-      setParticles(newParticles);
-    };
-    generateParticles();
-  }, []);
+  const phrases = ["Founder.", "Trader.", "Developer."];
 
-  const scrollToAbout = () => {
-    document.querySelector('#about').scrollIntoView({ behavior: 'smooth' });
-  };
+  // Pre-calculate particle and raindrop data to prevent recalculation
+  const particleData = useMemo(() => 
+    Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 1000,
+      y: Math.random() * 1000,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: Math.random() * 10 + 10,
+      delay: Math.random() * 5,
+    })), []
+  );
 
-  const scrollToProjects = () => {
-    document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const phrases = [
-    "Founder.",
-    "Trader.",
-    "Developer."
-  ];
+  const raindropData = useMemo(() => 
+    Array.from({ length: 40 }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      duration: Math.random() * 2 + 1.5,
+      delay: Math.random() * 3,
+    })), []
+  );
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-subtle">
-      {/* Polar Bear Mascot */}
-      <PolarBearMascot />
-      
-      {/* Subtle animated background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-radial from-accent-blue/5 via-transparent to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-conic from-accent-cyan/3 via-transparent to-accent-emerald/3"></div>
-      </div>
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        {/* Particle Background */}
+        <div className="absolute inset-0 opacity-30">
+          {particleData.map((particle) => (
+            <motion.div
+              key={`particle-${particle.id}`}
+              className="absolute w-1 h-1 bg-gradient-to-r from-accent-blue to-accent-cyan rounded-full"
+              animate={{
+                x: [0, particle.x],
+                y: [0, particle.y],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: particle.duration,
+                repeat: Infinity,
+                delay: particle.delay,
+              }}
+              style={{
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+              }}
+            />
+          ))}
+        </div>
 
-      {/* Minimal particles */}
-      <div className="particles">
-        {particles.map((particle) => (
-          <div
-            key={particle.id}
-            className="particle"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              animationDelay: `${particle.delay}s`,
-              animationDuration: `${particle.duration}s`,
-            }}
-          />
-        ))}
+        {/* Raindrops */}
+        <div className="absolute inset-0 overflow-hidden">
+          {raindropData.map((raindrop) => (
+            <motion.div
+              key={`raindrop-${raindrop.id}`}
+              className="absolute w-0.5 h-8 bg-gradient-to-b from-accent-cyan/60 to-transparent rounded-full"
+              animate={{
+                y: [-50, window.innerHeight + 50],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: raindrop.duration,
+                repeat: Infinity,
+                delay: raindrop.delay,
+                ease: "linear"
+              }}
+              style={{
+                left: `${raindrop.left}%`,
+                top: `-50px`,
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-r from-accent-blue/5 via-transparent to-accent-cyan/3"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent-emerald/3 to-transparent"></div>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+      <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="space-y-8"
+          ref={ref}
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="space-y-6"
         >
-          {/* Name */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mb-4"
-          >
-            <h2 className="text-lg font-medium text-slate-400 tracking-wider uppercase">
-              Hello, I'm
-            </h2>
-            <h1 className="text-3xl sm:text-4xl font-semibold text-slate-100 mt-2">
-              Ofameh
-            </h1>
-          </motion.div>
-
-          {/* Animated Tagline */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="min-h-[4rem] flex items-center justify-center"
-          >
-            <TypewriterText 
-              phrases={phrases} 
-              className="text-2xl sm:text-3xl lg:text-4xl font-medium"
-            />
-          </motion.div>
-
-          {/* Subtitle */}
+          {/* Introduction */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed"
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-slate-300 text-lg sm:text-xl font-medium"
           >
-            CEO of BetaFix, passionate trader, and innovative web developer. 
-            Transforming ideas into digital reality with cutting-edge technology.
+            Hello, I'm Ofameh
+          </motion.p>
+
+          {/* Main Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-50 leading-tight"
+          >
+            <TypewriterText phrases={phrases} />
+          </motion.h1>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed"
+          >
+            Building innovative solutions at the intersection of business, technology, and financial markets.
           </motion.p>
 
           {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4"
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 1.0 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8"
           >
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={scrollToProjects}
-              className="btn-primary"
+            <a
+              href="#projects"
+              className="btn-primary group"
             >
-              <FiPlay className="inline mr-2" size={16} />
               View My Work
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' })}
-              className="btn-secondary"
+              <motion.span
+                className="ml-2"
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                →
+              </motion.span>
+            </a>
+            <a
+              href="#contact"
+              className="btn-secondary group"
             >
-              Contact
-            </motion.button>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1 }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          >
-            <motion.button
-              onClick={scrollToAbout}
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="text-slate-500 hover:text-slate-300 transition-colors duration-200"
-            >
-              <FiArrowDown size={20} />
-            </motion.button>
+              Get In Touch
+              <motion.span
+                className="ml-2"
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+              >
+                →
+              </motion.span>
+            </a>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Subtle floating elements */}
+      {/* Scroll Indicator */}
       <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        className="absolute top-20 right-20 w-16 h-16 border border-slate-700/30 rounded-full opacity-30"
-      />
-      <motion.div
-        animate={{ rotate: -360 }}
-        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-        className="absolute bottom-20 left-20 w-12 h-12 border border-slate-600/20 rounded-full opacity-20"
-      />
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2, duration: 1 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="w-6 h-10 border-2 border-slate-400 rounded-full flex justify-center"
+        >
+          <motion.div
+            animate={{ y: [0, 12, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-1 h-3 bg-slate-400 rounded-full mt-2"
+          />
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
